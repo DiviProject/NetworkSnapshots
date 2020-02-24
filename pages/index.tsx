@@ -1,8 +1,13 @@
+// Dependencies (Hi Chris - just triggering a now build - please delete)
 import { Component } from 'react';
-import { App, Container } from '../components/style/App.style';
+import { App, Container, ContainerWrap } from '../components/style/App.style';
 
 import { Header } from '../components/shared/Header';
 import { Metadata } from '../components/shared/Metadata';
+
+import { IndexTitle } from '../components/index/Index.title';
+import { IndexCopy } from '../components/index/Index.copy';
+import { IndexHistory } from '../components/index/Index.history';
 
 export type IndexProps = { };
 export type IndexState = { };
@@ -19,7 +24,11 @@ export class IndexPage extends Component<IndexProps, IndexState> {
                 <Header/>
                 <Metadata/>
                 <Container>
-
+                    <ContainerWrap>
+                        <IndexTitle/>
+                        <IndexCopy/>
+                        <IndexHistory/>
+                    </ContainerWrap>
                 </Container>
             </App>
         );
