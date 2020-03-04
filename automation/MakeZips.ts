@@ -1,37 +1,37 @@
-const AWS = require('aws-sdk');
-const S3Stream = require('s3-upload-stream');
+import { S3 } from 'aws-sdk';
+import * as S3Stream from 's3-upload-stream';
+import { join } from 'path';
+
 const fs = require('fs');
-const path = require('path');
 const exec = require('execa');
-const cron = require('node-cron');
 
-const cwd = process.cwd();
-const folder = path.join(cwd, '..', '.divi');
-const fin1 = path.join(folder, 'blocks');
-const fin2 = path.join(folder, 'chainstate');
-const fname1 = `blocks-snapshot.zip`;
-const fout1 = path.join(cwd, fname1);
+export const cwd = process.cwd();
+export const folder = join(cwd, '..', '.divi');
+export const fin1 = join(folder, 'blocks');
+export const fin2 = join(folder, 'chainstate');
+export const fname1 = `blocks-snapshot.zip`;
+export const fout1 = join(cwd, fname1);
 
-const fname2 = `chainstate-snapshot.zip`;
-const fout2 = path.join(cwd, fname2);
+export const fname2 = `chainstate-snapshot.zip`;
+export const fout2 = join(cwd, fname2);
 
-const network = process.env.NETWORK || 'testnet';
-const fname3 = Number(new Date()) + `-${network}-snapshot.zip`;
-const fout3 = path.join(cwd, fname3);
+export const network = process.env.NETWORK || 'testnet';
+export const fname3 = Number(new Date()) + `-${network}-snapshot.zip`;
+export const fout3 = join(cwd, fname3);
 
-const endpoint = new AWS.Endpoint('nyc3.digitaloceanspaces.com');
-const accessKeyId = process.env.KEY || '';
-const secretAccessKey = process.env.SECRET || '';
+export const endpoint = 'https://nyc3.digitaloceanspaces.com';
+export const accessKeyId = process.env.KEY || '';
+export const secretAccessKey = process.env.SECRET || '';
 
 if (!accessKeyId && !secretAccessKey) {
     console.log('You need DigitalOcean Keys to run this');
     process.exit(1);
 }
 
-const s3 = new AWS.S3({ endpoint, accessKeyId, secretAccessKey });
+const s3 = new S3({ endpoint, accessKeyId, secretAccessKey });
 const s3Stream = S3Stream(s3);
 
-async function MakeZips() {
+export async function MakeZips() {
     console.log('Starting Zip process');
 
     const { stdout1, stderr1 } = await exec('zip', ['-1jr', fout1, fin1]);
@@ -80,12 +80,3 @@ async function MakeZips() {
 
     reader.pipe(uploader);
 }
-
-(
-    async () => {
-        await MakeZips();
-        cron.schedule('0 0 0 * * *', () => {
-            MakeZips();
-        });
-    }
-)();

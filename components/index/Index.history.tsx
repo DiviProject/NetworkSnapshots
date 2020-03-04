@@ -88,6 +88,8 @@ export class IndexHistory extends Component<IndexHistoryProps, IndexHistoryState
             }
         });
 
+        items.reverse();
+
         console.log('Contents', items);
 
         this.setState({ history: items });

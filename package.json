@@ -22,9 +22,10 @@
     "react-dom": "^16.12.0",
     "react-syntax-highlighter": "^12.2.1",
     "s3-upload-stream": "^1.0.7",
+    "ssh2": "^0.8.8",
     "styled-components": "^5.0.1",
     "superagent": "^5.2.2",
-    "typescript": "^3.7.5",
+    "typescript": "^3.8.3",
     "url": "^0.11.0",
     "xelement": "^1.0.17"
   },
@@ -32,6 +33,10 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "export": "next export -o build"
+    "export": "next export -o build",
+    "build-autozip": "tsc automation/Autozip.ts --outdir dist",
+    "build-generate": "tsc automation/Generate.ts --outdir dist",
+    "autozip": "npm run build-autozip && node dist/Autozip.js",
+    "generate": "npm run build-generate && node dist/Generate.js"
   }
 }

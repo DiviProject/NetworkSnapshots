@@ -102,6 +102,8 @@ export class IndexTitle extends Component<IndexTitleProps, IndexTitleState> {
 
         console.log('Contents', items);
 
+        items.reverse();
+
         const mainnet = items.filter(item => item.Key.indexOf('mainnet') !== -1).sort()[0];
         const testnet = items.filter(item => item.Key.indexOf('testnet') !== -1).sort()[0];
         const date = moment(new Date(mainnet.LastModified)).tz('America/New_York').format('MMMM Do YYYY');
