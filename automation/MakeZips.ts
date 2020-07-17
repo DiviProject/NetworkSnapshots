@@ -17,8 +17,8 @@ export const chainstateZipFileName = `chainstate-snapshot.zip`;
 export const chainstateZipPath = join(cwd, chainstateZipFileName);
 
 export const network = process.env.NETWORK || 'testnet';
-export const networkZipFileName = Number(new Date()) + `-${network}-snapshot.zip`;
-export const networkZipPath = join(cwd, networkZipFileName);
+export const snapshotZipFileName = Number(new Date()) + `-${network}-snapshot.zip`;
+export const networkZipPath = join(cwd, snapshotZipFileName);
 
 export const endpoint = 'https://nyc3.digitaloceanspaces.com';
 export const accessKeyId = process.env.KEY || '';
@@ -56,7 +56,7 @@ export async function MakeZips() {
             ACL: 'public-read',
             ContentType: 'application/zip',
             Bucket: 'divi-snapshots',
-            Key: networkZipFileName,
+            Key: snapshotZipFileName,
         },
     );
 
