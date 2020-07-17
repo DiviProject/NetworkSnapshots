@@ -18,7 +18,7 @@ export const chainstateZipPath = join(cwd, chainstateZipFileName);
 
 export const network = process.env.NETWORK || 'testnet';
 export const snapshotZipFileName = Number(new Date()) + `-${network}-snapshot.zip`;
-export const networkZipPath = join(cwd, snapshotZipFileName);
+export const snapshotZipFilePath = join(cwd, snapshotZipFileName);
 
 export const endpoint = 'https://nyc3.digitaloceanspaces.com';
 export const accessKeyId = process.env.KEY || '';
@@ -46,11 +46,11 @@ export async function MakeZips() {
     console.log('Zipped chainstate');
 
     console.log("Starting zip for all files");
-    var { stdout, stderr } = await exec('zip', ['-1jr', networkZipPath, blockZipPath, chainstateZipPath]);
+    var { stdout, stderr } = await exec('zip', ['-1jr', snapshotZipFilePath, blockZipPath, chainstateZipPath]);
     console.log(stdout, stderr);
     console.log('Zipped all files');
 
-    const reader = fs.createReadStream(networkZipPath);
+    const reader = fs.createReadStream(snapshotZipFilePath);
     const uploader = s3Stream.upload(
         {
             ACL: 'public-read',
@@ -74,7 +74,7 @@ export async function MakeZips() {
 
         fs.unlinkSync(blockZipPath);
         fs.unlinkSync(chainstateZipPath);
-        fs.unlinkSync(networkZipPath);
+        fs.unlinkSync(snapshotZipFilePath);
 
         console.log('Removed temporary zip files');
     });
