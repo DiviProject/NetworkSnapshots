@@ -42,21 +42,29 @@ export async function MakeZips() {
     console.log(stdout, stderr);
     console.log("created snapshot folder");
 
-    console.log("Starting Block zip process");
-    var { stdout, stderr } = await exec('zip', ['-1jr', blockZipPath, blocksFolder]);
+    console.log("copying blocks into snapshot folder");
+    var { stdout, stderr } = await exec('cp', ['-a', blocksFolder, temporaryDiviSnapshotFolderPath+"/blocks"]);
     console.log(stdout, stderr);
     console.log('Zipped blocks');
 
-    console.log("Starting Chainstate zip process");
-    var { stdout, stderr } = await exec('zip', ['-1jr', chainstateZipPath, chainstateFolder]);
+    console.log("copying chainstate into snapshot folder");
+    var { stdout, stderr } = await exec('cp', ['-a', chainstateFolder, temporaryDiviSnapshotFolderPath+"/chainstate"]);
     console.log(stdout, stderr);
     console.log('Zipped chainstate');
 
-    console.log("Starting zip for all files");
-    var { stdout, stderr } = await exec('zip', ['-1jr', snapshotZipFilePath, blockZipPath, chainstateZipPath]);
+    console.log("Zipping snapshot folder");
+    var { stdout, stderr } = await exec('zip', ['-1r', snapshotZipFileName, temporaryDiviSnapshotFolderPath]);
     console.log(stdout, stderr);
-    console.log('Zipped all files');
+    console.log('Zipped');
 
+    console.log("Deleting temporary snapshot folder");
+    var { stdout, stderr } = await exec('rm', ['-r', temporaryDiviSnapshotFolderPath]);
+    console.log(stdout, stderr);
+    console.log('Deleted');
+
+    console.log('Zip process completed');
+
+    console.log('Uploading');
     const reader = fs.createReadStream(snapshotZipFilePath);
     const uploader = s3Stream.upload(
         {
@@ -79,8 +87,6 @@ export async function MakeZips() {
         console.log(data);
         console.log('Snapshot taken successfully');
 
-        fs.unlinkSync(blockZipPath);
-        fs.unlinkSync(chainstateZipPath);
         fs.unlinkSync(snapshotZipFilePath);
 
         console.log('Removed temporary zip files');
