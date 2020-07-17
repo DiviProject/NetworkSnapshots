@@ -17,7 +17,7 @@ export const chainstateZipFileName = `chainstate-snapshot.zip`;
 export const chainstateZipPath = join(cwd, chainstateZipFileName);
 
 export const network = process.env.NETWORK || 'testnet';
-export const snapshotZipFileName = Number(new Date()) + `-${network}-snapshot.zip`;
+export const snapshotZipFileName = `divi-snapshots-${Number(new Date())}.zip`;
 export const snapshotZipFilePath = join(cwd, snapshotZipFileName);
 
 export const temporaryDiviSnapshotFolderPath = "/divi-snapshot";
