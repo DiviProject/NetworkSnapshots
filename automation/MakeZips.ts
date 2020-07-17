@@ -7,11 +7,12 @@ const exec = require('execa');
 
 export const cwd = process.cwd();
 export const folder = join(cwd, '..', '.divi');
+
 export const blocksFolder = join(folder, 'blocks');
-export const chainstateFolder = join(folder, 'chainstate');
 export const blockZipFileName = `blocks-snapshot.zip`;
 export const blockZipPath = join(cwd, blockZipFileName);
 
+export const chainstateFolder = join(folder, 'chainstate');
 export const chainstateZipFileName = `chainstate-snapshot.zip`;
 export const chainstateZipPath = join(cwd, chainstateZipFileName);
 
