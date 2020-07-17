@@ -35,18 +35,18 @@ export async function MakeZips() {
     console.log('Starting Zip process');
 
     console.log("Starting Block zip process");
-    const { stdout1, stderr1 } = await exec('zip', ['-1jr', blockZipPath, blocksFolder]);
-    console.log(stdout1, stderr1);
+    var { stdout, stderr } = await exec('zip', ['-1jr', blockZipPath, blocksFolder]);
+    console.log(stdout, stderr);
     console.log('Zipped blocks');
 
     console.log("Starting Chainstate zip process");
-    const { stdout2, stderr2 } = await exec('zip', ['-1jr', chainstateZipPath, chainstateFolder]);
-    console.log(stdout2, stderr2);
+    var { stdout, stderr } = await exec('zip', ['-1jr', chainstateZipPath, chainstateFolder]);
+    console.log(stdout, stderr);
     console.log('Zipped chainstate');
 
     console.log("Starting zip for all files");
-    const { stdout3, stderr3 } = await exec('zip', ['-1jr', networkZipPath, blockZipPath, chainstateZipPath]);
-    console.log(stdout3, stderr3);
+    var { stdout, stderr } = await exec('zip', ['-1jr', networkZipPath, blockZipPath, chainstateZipPath]);
+    console.log(stdout, stderr);
     console.log('Zipped all files');
 
     const reader = fs.createReadStream(networkZipPath);
