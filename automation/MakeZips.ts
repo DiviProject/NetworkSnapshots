@@ -34,19 +34,19 @@ const s3Stream = S3Stream(s3);
 export async function MakeZips() {
     console.log('Starting Zip process');
 
+    console.log("Starting Block zip process");
     const { stdout1, stderr1 } = await exec('zip', ['-1jr', blockZipPath, blocksFolder]);
     console.log(stdout1, stderr1);
-
     console.log('Zipped blocks');
 
+    console.log("Starting Chainstate zip process");
     const { stdout2, stderr2 } = await exec('zip', ['-1jr', chainstateZipPath, chainstateFolder]);
     console.log(stdout2, stderr2);
-
     console.log('Zipped chainstate');
 
+    console.log("Starting zip for all files");
     const { stdout3, stderr3 } = await exec('zip', ['-1jr', networkZipPath, blockZipPath, chainstateZipPath]);
     console.log(stdout3, stderr3);
-
     console.log('Zipped all files');
 
     const reader = fs.createReadStream(networkZipPath);
