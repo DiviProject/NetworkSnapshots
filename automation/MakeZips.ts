@@ -37,6 +37,11 @@ const s3Stream = S3Stream(s3);
 export async function MakeZips() {
     console.log('Starting Zip process');
 
+    console.log("creating snapshot folder", temporaryDiviSnapshotFolderPath);
+    var { stdout, stderr } = await exec('mkdir', [temporaryDiviSnapshotFolderPath]);
+    console.log(stdout, stderr);
+    console.log("created snapshot folder");
+
     console.log("Starting Block zip process");
     var { stdout, stderr } = await exec('zip', ['-1jr', blockZipPath, blocksFolder]);
     console.log(stdout, stderr);
