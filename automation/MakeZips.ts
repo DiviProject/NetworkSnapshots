@@ -20,6 +20,8 @@ export const network = process.env.NETWORK || 'testnet';
 export const snapshotZipFileName = Number(new Date()) + `-${network}-snapshot.zip`;
 export const snapshotZipFilePath = join(cwd, snapshotZipFileName);
 
+export const temporaryDiviSnapshotFolderPath = "/divi-snapshot";
+
 export const endpoint = 'https://nyc3.digitaloceanspaces.com';
 export const accessKeyId = process.env.KEY || '';
 export const secretAccessKey = process.env.SECRET || '';
