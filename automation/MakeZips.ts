@@ -7,17 +7,20 @@ const exec = require('execa');
 
 export const cwd = process.cwd();
 export const folder = join(cwd, '..', '.divi');
-export const fin1 = join(folder, 'blocks');
-export const fin2 = join(folder, 'chainstate');
-export const fname1 = `blocks-snapshot.zip`;
-export const fout1 = join(cwd, fname1);
 
-export const fname2 = `chainstate-snapshot.zip`;
-export const fout2 = join(cwd, fname2);
+export const blocksFolder = join(folder, 'blocks');
+export const blockZipFileName = `blocks-snapshot.zip`;
+export const blockZipPath = join(cwd, blockZipFileName);
+
+export const chainstateFolder = join(folder, 'chainstate');
+export const chainstateZipFileName = `chainstate-snapshot.zip`;
+export const chainstateZipPath = join(cwd, chainstateZipFileName);
 
 export const network = process.env.NETWORK || 'testnet';
-export const fname3 = Number(new Date()) + `-${network}-snapshot.zip`;
-export const fout3 = join(cwd, fname3);
+export const snapshotZipFileName = `${Number(new Date())}-${network}-snapshot.zip`;
+export const snapshotZipFilePath = join(cwd, snapshotZipFileName);
+
+export const temporaryDiviSnapshotFolderPath = "/divi-snapshot";
 
 export const endpoint = 'https://nyc3.digitaloceanspaces.com';
 export const accessKeyId = process.env.KEY || '';
@@ -34,28 +37,41 @@ const s3Stream = S3Stream(s3);
 export async function MakeZips() {
     console.log('Starting Zip process');
 
-    const { stdout1, stderr1 } = await exec('zip', ['-1jr', fout1, fin1]);
-    console.log(stdout1, stderr1);
+    console.log("creating snapshot folder", temporaryDiviSnapshotFolderPath);
+    var { stdout, stderr } = await exec('mkdir', [temporaryDiviSnapshotFolderPath]);
+    console.log(stdout, stderr);
+    console.log("created snapshot folder");
 
+    console.log("copying blocks into snapshot folder");
+    var { stdout, stderr } = await exec('cp', ['-a', blocksFolder, temporaryDiviSnapshotFolderPath+"/blocks"]);
+    console.log(stdout, stderr);
     console.log('Zipped blocks');
 
-    const { stdout2, stderr2 } = await exec('zip', ['-1jr', fout2, fin2]);
-    console.log(stdout2, stderr2);
-
+    console.log("copying chainstate into snapshot folder");
+    var { stdout, stderr } = await exec('cp', ['-a', chainstateFolder, temporaryDiviSnapshotFolderPath+"/chainstate"]);
+    console.log(stdout, stderr);
     console.log('Zipped chainstate');
 
-    const { stdout3, stderr3 } = await exec('zip', ['-1jr', fout3, fout1, fout2]);
-    console.log(stdout3, stderr3);
+    console.log("Zipping snapshot folder");
+    var { stdout, stderr } = await exec('zip', ['-1r', snapshotZipFileName, temporaryDiviSnapshotFolderPath]);
+    console.log(stdout, stderr);
+    console.log('Zipped');
 
-    console.log('Zipped all files');
+    console.log("Deleting temporary snapshot folder");
+    var { stdout, stderr } = await exec('rm', ['-r', temporaryDiviSnapshotFolderPath]);
+    console.log(stdout, stderr);
+    console.log('Deleted');
 
-    const reader = fs.createReadStream(fout3);
+    console.log('Zip process completed');
+
+    console.log('Uploading');
+    const reader = fs.createReadStream(snapshotZipFilePath);
     const uploader = s3Stream.upload(
         {
             ACL: 'public-read',
             ContentType: 'application/zip',
             Bucket: 'divi-snapshots',
-            Key: fname3,
+            Key: snapshotZipFileName,
         },
     );
 
@@ -71,9 +87,7 @@ export async function MakeZips() {
         console.log(data);
         console.log('Snapshot taken successfully');
 
-        fs.unlinkSync(fout1);
-        fs.unlinkSync(fout2);
-        fs.unlinkSync(fout3);
+        fs.unlinkSync(snapshotZipFilePath);
 
         console.log('Removed temporary zip files');
     });
