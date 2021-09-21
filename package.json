@@ -22,7 +22,7 @@
     "react-dom": "^16.12.0",
     "react-syntax-highlighter": "^12.2.1",
     "s3-upload-stream": "^1.0.7",
-    "ssh2": "^0.8.8",
+    "ssh2": "^1.4.0",
     "styled-components": "^5.0.1",
     "superagent": "^5.2.2",
     "typescript": "^3.8.3",
